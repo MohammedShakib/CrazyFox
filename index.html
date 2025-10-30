@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CrazyFox: The Year 6 Supernova Simulation</title>
+    <title>CrazyFox: The "Realistic Titan" Simulation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,28 +37,29 @@
          .repayment {
             color: #facc15;
         }
-        /* New styles for the sticky column */
         .sticky-col {
             position: -webkit-sticky; /* For Safari */
             position: sticky;
             left: 0;
             z-index: 10;
-            background-color: #111827; /* Must match the row background to hide content scrolling underneath */
+            background-color: #111827; /* Must match the row background */
         }
-        /* Add a subtle border to the right of the sticky header cell */
         thead .sticky-col {
             border-right: 1px solid #1f2937;
         }
-         /* Add a subtle border to the right of the sticky body cell */
         tbody tr .sticky-col {
              border-right: 1px solid #1f2937;
         }
+        /* Highlight for the special Year 6 */
         .supernova {
             background-color: rgba(250, 204, 21, 0.1);
             font-weight: 700;
         }
         .supernova .profit {
             text-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+        }
+        .supernova .text-yellow-300 {
+             text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
         }
     </style>
 </head>
@@ -68,7 +69,7 @@
         <!-- Header -->
         <header class="text-center mb-10">
             <h1 class="text-4xl md:text-5xl font-bold text-white">CrazyFox</h1>
-            <p class="text-lg md:text-xl text-gray-400 mt-2">The "Year 6 Supernova" Simulation (20 Years)</p>
+            <p class="text-lg md:text-xl text-gray-400 mt-2">The "Realistic Titan" Simulation (20 Years)</p>
         </header>
 
         <!-- Core Assumptions -->
@@ -89,7 +90,7 @@
                 </div>
                 <div class="flex items-center space-x-3">
                     <svg class="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    <span class="font-bold">Gross Return: <strong class="text-yellow-300">Y6 (200%)</strong>, others variable</span>
+                    <span class="font-bold">Gross Return: <strong>Realistic Scaling Model</strong></span>
                 </div>
                  <div class="flex items-center space-x-3">
                    <svg class="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V3m0 18v-3"></path></svg>
@@ -103,11 +104,10 @@
             <table class="w-full text-sm text-left text-gray-300">
                 <thead class="text-xs text-gray-400 uppercase table-header-bg">
                     <tr>
-                        <!-- Added sticky-col class to the Year header -->
                         <th scope="col" class="px-6 py-4 sticky-col">Year</th>
                         <th scope="col" class="px-6 py-4">Starting Equity (AUM)</th>
                         <th scope="col" class="px-6 py-4">Outstanding Loan</th>
-                        <th scope="col" class="px-6 py-4">Gross Return %</th>
+                        <th scope="col" classs="px-6 py-4">Gross Return %</th>
                         <th scope="col" class="px-6 py-4">Net Profit / Loss</th>
                         <th scope="col" class="px-6 py-4">Principal Repayment</th>
                         <th scope="col" class="px-6 py-4">Ending Equity (AUM)</th>
@@ -118,68 +118,70 @@
                 </tbody>
             </table>
         </div>
+        
+        <!-- Final Summary Card -->
+        <div class="card p-6 mt-10">
+            <h2 class="text-xl font-semibold text-white mb-4">20-Year Performance Summary</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-gray-300">
+                <div>
+                    <div class="text-sm text-gray-400">Starting Capital (Y1)</div>
+                    <div id="summary-start" class="text-2xl font-bold text-white">...</div>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-400">Total Equity Injected</div>
+                    <div id="summary-injected" class="text-2xl font-bold text-white">...</div>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-400">Total Net Profit</div>
+                    <div id="summary-profit" class="text-2xl font-bold text-white profit">...</div>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-400">Ending Equity (Y20)</div>
+                    <div id="summary-end" class="text-2xl font-bold text-white">...</div>
+                </div>
+            </div>
+        </div>
 
     </div>
 
     <script>
-        // --- DATA (Engineered random numbers for a hyper-growth scenario with a 200% Y6) ---
-        const randomReturns = [
-            0.48, 0.52, 0.55, 0.41, 0.53, // Years 1-5 (Exceptional Strong Start)
-            2.00, // Year 6 Supernova: 200% Gross Return
-            -0.10, 0.48, 0.35, 0.29,       // Years 7-10
-            0.42, 0.51, 0.31, -0.12, 0.55, // Years 11-15
-            0.45, 0.38, 0.46, 0.25, 0.49  // Years 16-20
+        // --- DATA (Years 1-14 from screenshot, Years 15-20 are realistically scaled) ---
+        const simulationData = [
+            // Data from image (Years 1-14)
+            { year: 1, startAUM: 30e6, loan: 0, grossReturn: 0.48, netProfit: 11.9e6, repayment: 0, endAUM: 41.9e6 },
+            { year: 2, startAUM: 41.9e6, loan: 0, grossReturn: 0.52, netProfit: 19.29e6, repayment: 0, endAUM: 61.19e6 },
+            { year: 3, startAUM: 261.19e6, loan: 0, grossReturn: 0.55, netProfit: 139.74e6, repayment: 0, endAUM: 400.92e6 }, // Includes +200M injection
+            { year: 4, startAUM: 400.92e6, loan: 0, grossReturn: 0.41, netProfit: 158.36e6, repayment: 0, endAUM: 559.29e6 },
+            { year: 5, startAUM: 559.29e6, loan: 1e9, grossReturn: 0.53, netProfit: 768.03e6, repayment: 0, endAUM: 1.33e9 },
+            { year: 6, startAUM: 1.33e9, loan: 1e9, grossReturn: 2.00, netProfit: 4.58e9, repayment: 0, endAUM: 5.91e9 }, // Supernova year
+            { year: 7, startAUM: 5.91e9, loan: 1e9, grossReturn: -0.10, netProfit: -829.89e6, repayment: 0, endAUM: 5.08e9 }, // Loss year
+            { year: 8, startAUM: 5.08e9, loan: 1e9, grossReturn: 0.48, netProfit: 2.79e9, repayment: 0, endAUM: 7.88e9 },
+            { year: 9, startAUM: 7.88e9, loan: 1e9, grossReturn: 0.35, netProfit: 2.94e9, repayment: 0, endAUM: 10.81e9 },
+            { year: 10, startAUM: 10.81e9, loan: 1e9, grossReturn: 0.29, netProfit: 3.21e9, repayment: 0, endAUM: 14.03e9 },
+            { year: 11, startAUM: 14.03e9, loan: 1e9, grossReturn: 0.42, netProfit: 6.05e9, repayment: 250e6, endAUM: 19.83e9 },
+            { year: 12, startAUM: 19.83e9, loan: 750e6, grossReturn: 0.51, netProfit: 10.16e9, repayment: 250e6, endAUM: 29.74e9 },
+            { year: 13, startAUM: 29.74e9, loan: 500e6, grossReturn: 0.31, netProfit: 8.90e9, repayment: 250e6, endAUM: 38.39e9 },
+            { year: 14, startAUM: 38.39e9, loan: 250e6, grossReturn: -0.12, netProfit: -5.23e9, repayment: 250e6, endAUM: 32.92e9 }, // Loss year
+            
+            // --- NEWLY SIMULATED DATA (Years 15-20) WITH REALISTIC DIMINISHING RETURNS ---
+            // Y15: GR: 50%, Loan: +5B
+            { year: 15, startAUM: 32.92e9, loan: 5e9, grossReturn: 0.50, netProfit: 18.22e9, repayment: 0, endAUM: 51.14e9 },
+            // Y16: GR: 32%, Repay: 500M
+            { year: 16, startAUM: 51.14e9, loan: 5e9, grossReturn: 0.32, netProfit: 16.94e9, repayment: 500e6, endAUM: 67.58e9 },
+            // Y17: GR: 24%, Repay: 500M
+            { year: 17, startAUM: 67.58e9, loan: 4.5e9, grossReturn: 0.24, netProfit: 16.07e9, repayment: 500e6, endAUM: 83.15e9 },
+            // Y18: GR: 18%, Repay: 500M
+            { year: 18, startAUM: 83.15e9, loan: 4e9, grossReturn: 0.18, netProfit: 14.24e9, repayment: 500e6, endAUM: 96.89e9 },
+            // Y19: GR: 13%, Repay: 500M
+            { year: 19, startAUM: 96.89e9, loan: 3.5e9, grossReturn: 0.13, netProfit: 11.43e9, repayment: 500e6, endAUM: 107.82e9 },
+            // Y20: GR: 10%, Repay: 500M
+            { year: 20, startAUM: 107.82e9, loan: 3e9, grossReturn: 0.10, netProfit: 9.31e9, repayment: 500e6, endAUM: 116.63e9 }
         ];
 
-        function recalculateFullData() {
-            let currentAUM = 30e6;
-            let currentLoan = 0;
-            const fullData = [];
-            const initialInjection = 200e6;
-            const loan1Amount = 1e9;
-            const loan2Amount = 5e9;
-
-            for (let i = 0; i < 20; i++) {
-                const year = i + 1;
-                let startAUM = currentAUM;
-
-                if (year === 3) startAUM += initialInjection;
-                if (year === 5) currentLoan += loan1Amount;
-                if (year === 15) currentLoan += loan2Amount;
-
-                const grossReturn = randomReturns[i];
-                
-                const totalInvestable = startAUM + currentLoan;
-                const grossProfit = totalInvestable * grossReturn;
-                const opsCost = year < 3 ? 2.5e6 : startAUM * 0.015;
-                const interestCost = currentLoan * 0.05;
-                const totalCost = opsCost + interestCost;
-                const netProfit = grossProfit - totalCost;
-                
-                let principalRepayment = 0;
-                if (year >= 11 && year <= 14) principalRepayment += 250e6;
-                if (year >= 16) {
-                    const loan2RepayAmount = 500e6;
-                    if (currentLoan >= loan2RepayAmount) principalRepayment += loan2RepayAmount;
-                }
-                
-                const endAUM = startAUM + netProfit - principalRepayment;
-
-                fullData.push({
-                    year, startAUM, loan: currentLoan, grossReturn, netProfit, repayment: principalRepayment, endAUM
-                });
-
-                currentAUM = endAUM;
-                currentLoan -= principalRepayment;
-            }
-            return fullData;
-        }
-
-        const finalData = recalculateFullData();
-
+        // --- FORMATTING HELPERS ---
         function formatCurrencyV2(num) {
             if (num === 0) return '$0';
-            const sign = num < 0 ? '−' : '+'; // Using minus sign for aesthetics
+            const sign = num < 0 ? '−' : '+';
             const absNum = Math.abs(num);
             if (absNum >= 1e12) return `${sign}$${(absNum / 1e12).toFixed(2)} T`;
             if (absNum >= 1e9) return `${sign}$${(absNum / 1e9).toFixed(2)} B`;
@@ -195,15 +197,19 @@
             if (absNum >= 1e6) return `$${(absNum / 1e6).toFixed(2)} M`;
             return `$${(absNum / 1e3).toFixed(0)} K`;
         }
-
-        const tableBody = document.getElementById('simulation-body-v2');
         
-        finalData.forEach((row) => {
+        // --- TABLE INJECTION ---
+        const tableBody = document.getElementById('simulation-body-v2');
+        let totalNetProfit = 0;
+        
+        simulationData.forEach((row) => {
             const tr = document.createElement('tr');
             tr.className = 'border-b table-row-border';
             if (row.year === 6) {
                 tr.classList.add('supernova');
             }
+            
+            totalNetProfit += row.netProfit;
             
             const netProfitClass = row.netProfit >= 0 ? 'profit' : 'loss';
             let grossReturnClass = row.grossReturn >= 0 ? 'text-gray-300' : 'loss font-semibold';
@@ -211,7 +217,6 @@
                  grossReturnClass = 'text-yellow-300 font-bold';
             }
 
-            // Added sticky-col class to the Year data cell
             tr.innerHTML = `
                 <td class="px-6 py-4 font-medium text-gray-100 sticky-col">${row.year}</td>
                 <td class="px-6 py-4">${formatCurrencyForTable(row.startAUM)}</td>
@@ -224,6 +229,13 @@
             
             tableBody.appendChild(tr);
         });
+        
+        // --- SUMMARY INJECTION ---
+        document.getElementById('summary-start').textContent = formatCurrencyForTable(30e6);
+        document.getElementById('summary-injected').textContent = formatCurrencyForTable(200e6);
+        document.getElementById('summary-profit').textContent = formatCurrencyV2(totalNetProfit);
+        document.getElementById('summary-end').textContent = formatCurrencyForTable(simulationData[simulationData.length - 1].endAUM);
+
     </script>
 </body>
 </html>
